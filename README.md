@@ -1,25 +1,45 @@
-Caddy-authz [![Build Status](https://travis-ci.com/casbin/caddy-authz.svg?branch=master)](https://travis-ci.com/casbin/caddy-authz) [![Coverage Status](https://coveralls.io/repos/github/casbin/caddy-authz/badge.svg?branch=master)](https://coveralls.io/github/casbin/caddy-authz?branch=master) [![GoDoc](https://godoc.org/github.com/casbin/caddy-authz?status.svg)](https://godoc.org/github.com/casbin/caddy-authz)
-======
+# Caddy-authz
 
-Caddy-authz is an authorization middleware for [Caddy](https://github.com/mholt/caddy), it's based on [https://github.com/casbin/casbin](https://github.com/casbin/casbin).
+[![Go](https://github.com/casbin/caddy-authz/actions/workflows/ci.yml/badge.svg)](https://github.com/casbin/caddy-authz/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/casbin/caddy-authz/badge.svg?branch=master)](https://coveralls.io/github/casbin/caddy-authz?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/casbin/caddy-authz)](https://goreportcard.com/report/github.com/casbin/caddy-authz)
+[![Godoc](https://godoc.org/github.com/casbin/caddy-authz?status.svg)](https://godoc.org/github.com/casbin/caddy-authz)
+
+Caddy-authz is an authorization middleware for [Caddy](https://github.com/caddyserver/caddy), based on [Casbin](https://github.com/casbin/casbin). It controls access to your web resources by enforcing authorization policies defined with Casbin.
 
 ## Installation
 
-    go get github.com/casbin/caddy-authz
-
-## Caddyfile syntax
-
 ```
-localhost {
-    route { 
-        authz "/folder/to/caddy_binary/authz_model.conf" "/folder/to/caddy_binary/authz_policy.csv"
-    }
-    respond "Hello, world!"
-    ...
+go get github.com/casbin/caddy-authz/v2
+```
+
+## Simple Example
+
+```go
+package main
+
+import (
+    "github.com/caddyserver/caddy/v2"
+    _ "github.com/casbin/caddy-authz/v2"
+)
+
+func main() {
+    caddy.Run(&caddy.Config{})
 }
 ```
 
-or
+## Caddyfile Syntax
+
+```
+localhost {
+    route {
+        authz "/path/to/authz_model.conf" "/path/to/authz_policy.csv"
+    }
+    respond "Hello, world!"
+}
+```
+
+Or using global options to control directive ordering:
 
 ```
 {
@@ -27,46 +47,52 @@ or
 }
 
 localhost {
-	authz "/folder/to/caddy_binary/authz_model.conf" "/folder/to/caddy_binary/authz_policy.csv"
-	respond "Hello, world!"
-    ...
-}
-```
-
-The ``authz`` directive specifies the path to Casbin model file (.conf) and Casbin policy file (.csv). The Casbin model file describes access control models like ACL, RBAC, ABAC, etc. The Casbin policy file describes the authorization policy rules. For how to write these files, please refer to: https://github.com/casbin/casbin#get-started
-
-## A working example
-
-1. ``cd`` into the folder of ``caddy`` binary.
-
-2. Put your Casbin model file [authz_model.conf](https://github.com/casbin/caddy-authz/blob/master/authz_model.conf) and Casbin policy file [authz_policy.csv](https://github.com/casbin/caddy-authz/blob/master/authz_policy.csv) into this folder.
-
-3. Add ``authz`` directive to your Caddyfile like:
-
-```
-localhost:666 {
-    route { 
-        authz "authz_model.conf" "authz_policy.csv"
-    }
+    authz "/path/to/authz_model.conf" "/path/to/authz_policy.csv"
     respond "Hello, world!"
-    ...
 }
 ```
 
-4. Run ``caddy`` and enjoy.
+The `authz` directive takes two arguments:
 
-Note: This plugin only supports HTTP basic authentication to get the logged-in user name, if you use other kinds of authentication like OAuth, LDAP, etc, you may need to customize this plugin.
+1. Path to the Casbin **model file** (`.conf`) — describes the access control model (ACL, RBAC, ABAC, etc.)
+2. Path to the Casbin **policy file** (`.csv`) — describes the authorization rules
 
-## How to control the access
+For how to write these files, refer to the [Casbin documentation](https://casbin.org/docs/get-started).
 
-The authorization determines a request based on ``{subject, object, action}``, which means what ``subject`` can perform what ``action`` on what ``object``. In this plugin, the meanings are:
+## How Access Control Works
 
-1. ``subject``: the logged-on user name
-2. ``object``: the URL path for the web resource like "dataset1/item1"
-3. ``action``: HTTP method like GET, POST, PUT, DELETE, or the high-level actions you defined like "read-file", "write-blog"
+Authorization is determined based on `{subject, object, action}`:
 
+| Field | Meaning |
+|-------|---------|
+| `subject` | The logged-in user name (from HTTP Basic Auth header) |
+| `object` | The URL path of the requested resource, e.g. `dataset1/item1` |
+| `action` | The HTTP method, e.g. `GET`, `POST`, `PUT`, `DELETE` |
 
-For how to write authorization policy and other details, please refer to [the Casbin's documentation](https://github.com/casbin/casbin).
+> **Note:** This plugin reads the user name from the HTTP `Authorization` header using Basic Auth. If you use other authentication methods (OAuth, LDAP, JWT, etc.), you will need to customize the plugin.
+
+## Working Example
+
+1. Build Caddy with this plugin using [xcaddy](https://github.com/caddyserver/xcaddy):
+
+    ```bash
+    xcaddy build --with github.com/casbin/caddy-authz/v2
+    ```
+
+2. Place your Casbin model file [authz_model.conf](https://github.com/casbin/caddy-authz/blob/master/authz_model.conf) and policy file [authz_policy.csv](https://github.com/casbin/caddy-authz/blob/master/authz_policy.csv) in a known directory.
+
+3. Add the `authz` directive to your `Caddyfile`:
+
+    ```
+    localhost:8080 {
+        route {
+            authz "authz_model.conf" "authz_policy.csv"
+        }
+        respond "Hello, world!"
+    }
+    ```
+
+4. Run `caddy` and enjoy.
 
 ## Getting Help
 

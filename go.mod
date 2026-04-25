@@ -1,6 +1,6 @@
 module github.com/casbin/caddy-authz/v2
 
-go 1.14
+go 1.22
 
 require (
 	github.com/caddyserver/caddy/v2 v2.2.1
