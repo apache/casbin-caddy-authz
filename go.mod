@@ -43,7 +43,6 @@ require (
 	github.com/juju/ansiterm v0.0.0-20180109212912-720a0952cc2a // indirect
 	github.com/klauspost/compress v1.11.0 // indirect
 	github.com/klauspost/cpuid v1.2.5 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/libdns/libdns v0.1.0 // indirect
 	github.com/lucas-clemente/quic-go v0.18.0 // indirect
 	github.com/lunixbochs/vtclean v1.0.0 // indirect
@@ -69,7 +68,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/samfoo/ansi v0.0.0-20160124022901-b6bd2ded7189 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
-	github.com/sirupsen/logrus v1.4.2 // indirect
+	github.com/sirupsen/logrus v1.8.3 // indirect
 	github.com/smallstep/certificates v0.15.4 // indirect
 	github.com/smallstep/cli v0.15.2 // indirect
 	github.com/smallstep/nosql v0.3.0 // indirect
@@ -85,7 +84,7 @@ require (
 	go.uber.org/zap v1.15.0 // indirect
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de // indirect
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
-	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1 // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20200806141610-86f49bd18e98 // indirect
 	google.golang.org/grpc v1.27.1 // indirect
