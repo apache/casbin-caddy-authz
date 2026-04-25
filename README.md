@@ -1,16 +1,16 @@
 # Caddy-authz
 
-[![Go](https://github.com/casbin/caddy-authz/actions/workflows/ci.yml/badge.svg)](https://github.com/casbin/caddy-authz/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/github/casbin/caddy-authz/badge.svg?branch=master)](https://coveralls.io/github/casbin/caddy-authz?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/casbin/caddy-authz)](https://goreportcard.com/report/github.com/casbin/caddy-authz)
-[![Godoc](https://godoc.org/github.com/casbin/caddy-authz?status.svg)](https://godoc.org/github.com/casbin/caddy-authz)
+[![Go](https://github.com/apache/casbin-caddy-authz/actions/workflows/ci.yml/badge.svg)](https://github.com/apache/casbin-caddy-authz/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/apache/casbin-caddy-authz/badge.svg?branch=master)](https://coveralls.io/github/apache/casbin-caddy-authz?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/apache/casbin-caddy-authz)](https://goreportcard.com/report/github.com/apache/casbin-caddy-authz)
+[![Godoc](https://godoc.org/github.com/apache/casbin-caddy-authz?status.svg)](https://godoc.org/github.com/apache/casbin-caddy-authz)
 
 Caddy-authz is an authorization middleware for [Caddy](https://github.com/caddyserver/caddy), based on [Casbin](https://github.com/casbin/casbin). It controls access to your web resources by enforcing authorization policies defined with Casbin.
 
 ## Installation
 
 ```
-go get github.com/casbin/caddy-authz/v2
+go get github.com/apache/casbin-caddy-authz/v2
 ```
 
 ## Simple Example
@@ -20,7 +20,7 @@ package main
 
 import (
     "github.com/caddyserver/caddy/v2"
-    _ "github.com/casbin/caddy-authz/v2"
+    _ "github.com/apache/casbin-caddy-authz/v2"
 )
 
 func main() {
@@ -76,10 +76,10 @@ Authorization is determined based on `{subject, object, action}`:
 1. Build Caddy with this plugin using [xcaddy](https://github.com/caddyserver/xcaddy):
 
     ```bash
-    xcaddy build --with github.com/casbin/caddy-authz/v2
+    xcaddy build --with github.com/apache/casbin-caddy-authz/v2
     ```
 
-2. Place your Casbin model file [authz_model.conf](https://github.com/casbin/caddy-authz/blob/master/authz_model.conf) and policy file [authz_policy.csv](https://github.com/casbin/caddy-authz/blob/master/authz_policy.csv) in a known directory.
+2. Place your Casbin model file [authz_model.conf](https://github.com/apache/casbin-caddy-authz/blob/master/authz_model.conf) and policy file [authz_policy.csv](https://github.com/apache/casbin-caddy-authz/blob/master/authz_policy.csv) in a known directory.
 
 3. Add the `authz` directive to your `Caddyfile`:
 
