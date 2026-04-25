@@ -1,11 +1,11 @@
-# Caddy-authz
+# casbin-caddy-authz
 
 [![Go](https://github.com/apache/casbin-caddy-authz/actions/workflows/ci.yml/badge.svg)](https://github.com/apache/casbin-caddy-authz/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/apache/casbin-caddy-authz/badge.svg?branch=master)](https://coveralls.io/github/apache/casbin-caddy-authz?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/apache/casbin-caddy-authz)](https://goreportcard.com/report/github.com/apache/casbin-caddy-authz)
 [![Godoc](https://godoc.org/github.com/apache/casbin-caddy-authz?status.svg)](https://godoc.org/github.com/apache/casbin-caddy-authz)
 
-Caddy-authz is an authorization middleware for [Caddy](https://github.com/caddyserver/caddy), based on [Casbin](https://github.com/casbin/casbin). It controls access to your web resources by enforcing authorization policies defined with Casbin.
+casbin-caddy-authz is an authorization middleware for [Caddy](https://github.com/caddyserver/caddy), based on [Apache Casbin](https://github.com/apache/casbin). It controls access to your web resources by enforcing authorization policies defined with Apache Casbin.
 
 ## Installation
 
@@ -54,10 +54,10 @@ localhost {
 
 The `authz` directive takes two arguments:
 
-1. Path to the Casbin **model file** (`.conf`) — describes the access control model (ACL, RBAC, ABAC, etc.)
-2. Path to the Casbin **policy file** (`.csv`) — describes the authorization rules
+1. Path to the Apache Casbin **model file** (`.conf`) — describes the access control model (ACL, RBAC, ABAC, etc.)
+2. Path to the Apache Casbin **policy file** (`.csv`) — describes the authorization rules
 
-For how to write these files, refer to the [Casbin documentation](https://casbin.org/docs/get-started).
+For how to write these files, refer to the [Apache Casbin documentation](https://casbin.apache.org/docs/get-started).
 
 ## How Access Control Works
 
@@ -79,7 +79,7 @@ Authorization is determined based on `{subject, object, action}`:
     xcaddy build --with github.com/apache/casbin-caddy-authz/v2
     ```
 
-2. Place your Casbin model file [authz_model.conf](https://github.com/apache/casbin-caddy-authz/blob/master/authz_model.conf) and policy file [authz_policy.csv](https://github.com/apache/casbin-caddy-authz/blob/master/authz_policy.csv) in a known directory.
+2. Place your Apache Casbin model file [authz_model.conf](https://github.com/apache/casbin-caddy-authz/blob/master/authz_model.conf) and policy file [authz_policy.csv](https://github.com/apache/casbin-caddy-authz/blob/master/authz_policy.csv) in a known directory.
 
 3. Add the `authz` directive to your `Caddyfile`:
 
@@ -96,7 +96,7 @@ Authorization is determined based on `{subject, object, action}`:
 
 ## Getting Help
 
-- [Casbin](https://github.com/casbin/casbin)
+- [Apache Casbin](https://github.com/apache/casbin)
 
 ## License
 
