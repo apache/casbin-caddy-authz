@@ -24,10 +24,10 @@ func init() {
 
 type Authorizer struct {
 	AuthConfig struct {
-		ModelPath  string
-		PolicyPath string
-	}
-	Enforcer *casbin.Enforcer
+		ModelPath  string `json:"model_path"`
+		PolicyPath string `json:"policy_path"`
+	} `json:"auth_config"`
+	Enforcer *casbin.Enforcer `json:"-"`
 }
 
 // CaddyModule returns the Caddy module information.

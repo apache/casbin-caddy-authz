@@ -37,6 +37,7 @@ func initTester(t *testing.T) {
 	{
 		http_port     9080
 		https_port    9443
+		admin localhost:2999
 	}
 	localhost:9080 {
 		route /* {

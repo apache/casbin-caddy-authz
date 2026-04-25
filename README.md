@@ -59,17 +59,50 @@ The `authz` directive takes two arguments:
 
 For how to write these files, refer to the [Apache Casbin documentation](https://casbin.apache.org/docs/get-started).
 
+## Security: Authentication vs Authorization
+
+> **⚠️ Important:** This plugin handles **authorization only** — it does NOT validate passwords or verify user identity.
+>
+> You **must** place an authentication middleware **before** this plugin to verify credentials. Without it, anyone can set an arbitrary `Authorization` header and impersonate any user.
+
+This plugin is designed to be used alongside a dedicated authentication layer:
+
+```
+localhost:8080 {
+    route {
+        basicauth {                                      # ← Step 1: Authentication (validates credentials)
+            alice $2a$14$Zkx19XLiW6VYouLHR5NmfOFU0z2GTNmpkT/5qqR7hx4IjWJPDhjvG
+        }
+        authz "authz_model.conf" "authz_policy.csv"    # ← Step 2: Authorization (checks permissions)
+        respond "Hello, world!"
+    }
+}
+```
+
+Caddy's built-in [`basicauth`](https://caddyserver.com/docs/caddyfile/directives/basic_auth) directive is recommended for HTTP Basic Authentication. For other schemes (OAuth, JWT, LDAP, etc.), use the appropriate authentication plugin and ensure it runs before `authz`.
+
+If you need to validate credentials programmatically, set the `CredentialValidator` hook before the server starts:
+
+```go
+import authz "github.com/apache/casbin-caddy-authz/v3"
+
+func init() {
+    authz.CredentialValidator = func(username, password string) bool {
+        // query your database or LDAP here
+        return myDB.CheckPassword(username, password)
+    }
+}
+```
+
 ## How Access Control Works
 
 Authorization is determined based on `{subject, object, action}`:
 
 | Field | Meaning |
 |-------|---------|
-| `subject` | The logged-in user name (from HTTP Basic Auth header) |
+| `subject` | The authenticated user name (extracted from HTTP Basic Auth header) |
 | `object` | The URL path of the requested resource, e.g. `dataset1/item1` |
 | `action` | The HTTP method, e.g. `GET`, `POST`, `PUT`, `DELETE` |
-
-> **Note:** This plugin reads the user name from the HTTP `Authorization` header using Basic Auth. If you use other authentication methods (OAuth, LDAP, JWT, etc.), you will need to customize the plugin.
 
 ## Working Example
 
