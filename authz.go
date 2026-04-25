@@ -12,6 +12,11 @@ import (
 	"github.com/casbin/casbin/v2"
 )
 
+// CredentialValidator validates a username and password from HTTP Basic Auth.
+// Assign a custom implementation before using the plugin.
+// If nil, any non-empty username is accepted without password verification.
+var CredentialValidator func(username, password string) bool
+
 func init() {
 	caddy.RegisterModule(Authorizer{})
 	httpcaddyfile.RegisterHandlerDirective("authz", parseCaddyfile)
@@ -53,13 +58,25 @@ func (a *Authorizer) Validate() error {
 
 // ServeHTTP implements caddyhttp.MiddlewareHandler.
 func (a Authorizer) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
-	allowed, err := a.CheckPermission(r)
+	username, password, ok := r.BasicAuth()
+	if !ok {
+		w.Header().Set("WWW-Authenticate", `Basic realm="restricted"`)
+		w.WriteHeader(http.StatusUnauthorized)
+		return nil
+	}
+
+	if CredentialValidator != nil && !CredentialValidator(username, password) {
+		w.Header().Set("WWW-Authenticate", `Basic realm="restricted"`)
+		w.WriteHeader(http.StatusUnauthorized)
+		return nil
+	}
+
+	allowed, err := a.CheckPermission(username, r)
 	if err != nil {
 		return err
 	}
-
 	if !allowed {
-		w.WriteHeader(403)
+		w.WriteHeader(http.StatusForbidden)
 		return nil
 	}
 
@@ -88,20 +105,9 @@ func parseCaddyfile(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error)
 	return m, err
 }
 
-// GetUserName gets the user name from the request.
-// Currently, only HTTP basic authentication is supported
-func (a *Authorizer) GetUserName(r *http.Request) string {
-	username := r.Header.Get("Authorization")
-	return username
-}
-
-// CheckPermission checks the user/method/path combination from the request.
-// Returns true (permission granted) or false (permission forbidden)
-func (a *Authorizer) CheckPermission(r *http.Request) (bool, error) {
-	user := a.GetUserName(r)
-	method := r.Method
-	path := r.URL.Path
-	return a.Enforcer.Enforce(user, path, method)
+// CheckPermission checks if the given user is allowed to access the resource.
+func (a *Authorizer) CheckPermission(username string, r *http.Request) (bool, error) {
+	return a.Enforcer.Enforce(username, r.URL.Path, r.Method)
 }
 
 // Interface guards
